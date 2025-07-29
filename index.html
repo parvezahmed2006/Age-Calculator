@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Modern Age Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap');
+    body {
+      min-height: 100vh;
+      margin: 0;
+      box-sizing: border-box;
+      background: linear-gradient(130deg, #7b47fc 0%, #00c6ff 100%);
+      font-family: 'Montserrat', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      background: rgba(255,255,255,0.10);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.20);
+      border-radius: 20px;
+      padding: 42px 34px 32px 34px;
+      width: 335px;
+      min-height: 350px;
+      transition: all .3s;
+      animation: fadeIn .6s;
+    }
+    .hidden { display: none; }
+    h2 {
+      text-align: center;
+      margin-bottom: 28px;
+      color: #fff;
+      letter-spacing: 2px;
+      font-weight: 700;
+      font-size: 2rem;
+      text-shadow: 0 2px 8px #41366690;
+    }
+    .gender-options {
+      display: flex;
+      gap: 36px;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .gender-btn {
+      cursor: pointer;
+      text-align: center;
+      border-radius: 15px;
+      padding: 14px 18px 8px 18px;
+      background: rgba(255,255,255,0.24);
+      box-shadow: 0 2px 12px rgba(75,71,252,0.08);
+      transition: transform .2s, box-shadow .2s;
+      border: 2.5px solid transparent;
+      will-change: transform;
+    }
+    .gender-btn:hover, .gender-btn.selected {
+      transform: scale(1.07) rotate(-2deg);
+      box-shadow: 0 5px 18px rgba(123,71,252,0.18);
+      border-color: #7b47fc;
+      background: rgba(255, 255, 255, 0.3);
+    }
+    .gender-logo {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
+      margin-bottom: 4px;
+      border-radius: 50%;
+      background: #fff8;
+      box-shadow: 0 0px 10px #2e205c15;
+      animation: float 2.6s ease-in-out infinite alternate;
+    }
+    .gender-btn.girl .gender-logo { animation-delay: .8s; }
+    @keyframes float { 100% { transform: translateY(-12px); } }
+    label {
+      display: block;
+      margin-bottom: 14px;
+      color: #f2f2fa;
+      font-weight: 500;
+      font-size: 1rem;
+    }
+    input[type="date"] {
+      width: 100%;
+      padding: 12px 10px;
+      border-radius: 8px;
+      border: none;
+      background: #f5f5fc;
+      color: #413666;
+      font-size: 1rem;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 6px rgba(125, 102, 255, 0.08);
+    }
+    button, .btn {
+      width: 100%;
+      padding: 12px 0;
+      background: linear-gradient(90deg, #00c6ff, #7b47fc);
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      cursor: pointer;
+      margin: 14px 0 0 0;
+      transition: background 0.3s;
+      box-shadow: 0 2px 12px rgba(75,71,252,0.06);
+    }
+    button:hover,.btn:hover {
+      background: linear-gradient(90deg, #7b47fc, #00c6ff);
+    }
+    .result-visuals {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin: 0 0 20px 0;
+      animation: popIn .9s;
+    }
+    .effect-img {
+      width: 46px;
+      height: 46px;
+      animation: bounce .8s alternate infinite;
+      transition: filter 0.2s;
+      filter: drop-shadow(0 2px 8px #fff2);
+    }
+    .effect-img:hover { filter: brightness(1.25); }
+    .effect-img:nth-child(2) { animation-delay: .23s }
+    .effect-img:nth-child(3) { animation-delay: .42s }
+    .effect-img:nth-child(4) { animation-delay: .55s }
+    @keyframes bounce { 100% { transform: translateY(-14px);} }
+    @keyframes popIn {
+      from {opacity: 0; transform: scale(0.8);}
+      to {opacity: 1; transform: scale(1);}
+    }
+    #resultDisplay {
+      text-align: center;
+      margin-top: 12px;
+      color: #222;
+      font-size: 1.25rem;
+      font-weight: 600;
+      min-height: 1.7em;
+    }
+    .small-note {
+      font-size: 0.93rem;
+      color: #ffe;
+      opacity: .75;
+      text-align: center;
+      margin-bottom: -8px;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0;transform: translateY(60px);}
+      to {opacity:1;transform:none;}
+    }
+  </style>
+</head>
+<body>
+  <!-- Gender Selection Section -->
+  <div class="container" id="genderSection">
+    <h2>Select Your Gender</h2>
+    <div class="gender-options">
+      <div class="gender-btn boy" id="boyBtn" title="I'm a boy">
+        <img src="male.png"
+            
+             alt="Boy Logo"
+             class="gender-logo" style="background: #d7e2fc"/>
+        <span>Male</span>
+      </div>
+      <div class="gender-btn girl" id="girlBtn" title="I'm a girl">
+        <img src="female.png"
+             alt="Girl Logo"
+             class="gender-logo" style="background: #f7def3"/>
+        <span>Female</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Age Input Section -->
+  <div class="container hidden" id="ageSection">
+    <form id="ageForm" autocomplete="off">
+      <h2>Age Calculator</h2>
+      <label for="dob">Enter your date of birth</label>
+      <input type="date" id="dob" name="dob" max="">
+      <button type="submit">Calculate Age</button>
+      <div class="small-note" style="margin:9px 0 -16px 0;">Please Enter a Valid Date of Birth.</div>
+    </form>
+  </div>
+
+  <!-- Result/Celebration Section -->
+  <div class="container hidden" id="resultSection">
+    <div class="result-visuals">
+      <img src="birthday.png" alt="Birthday Cake" class="effect-img"/>
+      <img src="candy.png" alt="Candy" class="effect-img"/>
+      <img src="coffee.png" alt="Coffee" class="effect-img"/>
+      <img src="chocolate.png" alt="Chocolate" class="effect-img"/>
+    </div>
+    <div id="resultDisplay"></div>
+    <button class="btn" id="backBtn">Back</button>
+  </div>
+
+  <!-- Lottie Animations Support (Boy/Girl) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.10.2/lottie.min.js"></script>
+  <script>
+    // Helper: Load Lottie JSON in selected gender logos
+    function animateLottieImages() {
+      const lottieImgs = document.querySelectorAll('[data-lottie]');
+      lottieImgs.forEach(img => {
+        const container = document.createElement('div');
+        container.style.width = img.width+'px';
+        container.style.height = img.height+'px';
+        container.style.display = 'inline-block';
+        img.parentNode.replaceChild(container, img);
+        lottie.loadAnimation({
+          container: container,
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: img.getAttribute('data-lottie')
+        });
+      });
+    }
+    // Only animate after DOM
+    window.addEventListener('DOMContentLoaded', animateLottieImages);
+  </script>
+  <script>
+    // ---- DOM Elements ----
+    const genderSection = document.getElementById('genderSection');
+    const boyBtn = document.getElementById('boyBtn');
+    const girlBtn = document.getElementById('girlBtn');
+    const ageSection = document.getElementById('ageSection');
+    const resultSection = document.getElementById('resultSection');
+    const dobInput = document.getElementById('dob');
+    const form = document.getElementById('ageForm');
+    const resultDisplay = document.getElementById('resultDisplay');
+    const backBtn = document.getElementById('backBtn');
+    let selectedGender = null;
+
+    // Max date is today
+    dobInput.max = new Date().toISOString().split('T')[0];
+
+    // ---- GENDER SELECTION ----
+    function selectGender(gender) {
+      selectedGender = gender;
+      genderSection.classList.add('hidden');
+      ageSection.classList.remove('hidden');
+      if (gender === 'boy') {
+        boyBtn.classList.add('selected');
+        girlBtn.classList.remove('selected');
+      } else {
+        girlBtn.classList.add('selected');
+        boyBtn.classList.remove('selected');
+      }
+    }
+    boyBtn.addEventListener('click', () => selectGender('boy'));
+    girlBtn.addEventListener('click', () => selectGender('girl'));
+
+    // ---- AGE CALCULATION ----
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const dobValue = dobInput.value;
+      if (!dobValue) {
+        showResult("Please select your date of birth!", true);
+        return;
+      }
+      const age = calculateAge(new Date(dobValue), new Date());
+      if (!age) {
+        showResult("Date of birth can't be in the future!", true);
+        return;
+      }
+      // Goto results display
+      ageSection.classList.add('hidden');
+      renderResult(age, selectedGender);
+      resultSection.classList.remove('hidden');
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+
+    function calculateAge(dob, today) {
+      if (dob > today) return null;
+      let years = today.getFullYear() - dob.getFullYear();
+      let months = today.getMonth() - dob.getMonth();
+      let days = today.getDate() - dob.getDate();
+      if (days < 0) {
+        months--;
+        let prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+        days += prevMonth.getDate();
+      }
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+      return { years, months, days };
+    }
+    function renderResult(age, gender) {
+      let genderMsg = gender === "boy"
+        ? '<span style="color:#3d4bc1;font-size:1.10em">🎩 Hello Sir</span>'
+        : '<span style="color:#c45fa0;font-size:1.10em">🎀 Hello Mam</span>';
+      resultDisplay.innerHTML =
+        `<div style="font-size:1.55em; margin-bottom:14px">${genderMsg}</div>
+        <span>You are <span style="color:#d7e2fc">${age.years}</span> years,
+        <span style="color:#d7e2fc">${age.months}</span> months, and
+        <span style="color:#d7e2fc">${age.days}</span> days old.</span>
+        <br>
+        <span style="color:#eef2fc; font-size:.5em; display:block; margin-top:25px;">
+        <i>!! Created by Parvez !!</i> </span>`;
+    }
+    function showResult(msg, isError) {
+      resultDisplay.style.color = isError ? "#ff2f4d" : "#4bb543";
+      resultDisplay.innerHTML = msg;
+    }
+    // ---- Go Back ----
+    backBtn.addEventListener('click', () => {
+      resultSection.classList.add('hidden');
+      dobInput.value = '';
+      ageSection.classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>
